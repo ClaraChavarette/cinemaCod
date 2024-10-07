@@ -1,0 +1,5 @@
+print("FILMES EM EXIBIÇÃO:")
+filmeExibicao =[
+    "É assim que acaba","Thor", "Top gan"
+]
+print(filmeExibicao)
