@@ -1,0 +1,11 @@
+pip install mysql-connector-python       
+(instalar no terminal)
+
+create database loginCinema;
+use loginCinema;
+
+CREATE TABLE usuarios (
+    id int (2) PRIMARY KEY AUTO_INCREMENT,
+    usuario varchar (50) not null,
+    senha varchar(4) not null
+);

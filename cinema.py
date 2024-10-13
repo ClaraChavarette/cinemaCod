@@ -29,7 +29,7 @@ elif filmeEscolhido == "2":
 
 
 elif filmeEscolhido == "3":
-    print(filme2)
+    print(filme3)
     confirmado = input("Confirme se o filme acima foi o escolhido (S para sim e N para não)")
     if confirmado == "s" or confirmado =="S":
         subprocess.run(['python', 'cinemaDois.py'])
