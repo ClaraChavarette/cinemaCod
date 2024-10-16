@@ -50,7 +50,7 @@ def escolherPoltrona():
     # Executa a consulta para selecionar a sesao baseado no código 
     cursor.execute("SELECT num, lado FROM poltrona WHERE num = %s", (poltronaEscolhida,))
     sessao = cursor.fetchone()
-    pilhaEscolha.append((num, lado))
+    pilhaEscolha.append((poltronaEscolhida))
 
 def escolherSessao():
 
@@ -72,7 +72,7 @@ def escolherSessao():
     # Executa a consulta para selecionar a sesao baseado no código 
     cursor.execute("SELECT cod, dia, hora, sala FROM sessao WHERE cod = %s", (sessaoEscolhida,))
     sessao = cursor.fetchone()
-    pilhaEscolha.append((cod, dia, hora, sala))
+    pilhaEscolha.append((sessaoEscolhida))
 
 # Função de cadastro de usuário na tabela já existente
 def cadastrarUsuario(nome, senha):
@@ -99,6 +99,8 @@ def login(nome, senha):
         print("Login bem-sucedido!")
         escolherSessao()
         escolherPoltrona()
+        escolherIngresso()
+        pilhaEscolha.append((nome,senha ))
         return False 
     else:
         print("Usuário ou senha incorretos.")
@@ -131,8 +133,8 @@ def escolherFilme():
     filmeEscolhido = input("Digite o código do filme que quer comprar: ")
 
     # Executa a consulta para selecionar o filme baseado no código (matricula)
-    cursor.execute("SELECT nome, matricula FROM filmes WHERE matricula = %s", (filmeEscolhido,))
-    filme = cursor.fetchone()
+    cursor.execute("SELECT nome, matricula FROM ingresso")
+    ingresso = cursor.fetchone()
 
     # Verifica se o filme existe
     if filme:
@@ -141,7 +143,7 @@ def escolherFilme():
         
         filmeConfirmado = input("Confirme se o filme acima foi o escolhido (S para sim e N para não): ")
         if filmeConfirmado == "s" or filmeConfirmado =="S":
-           pilhaEscolha.append((nome, matricula))
+           pilhaEscolha.append((filmeEscolhido))
            menu()
 
 
@@ -154,8 +156,23 @@ def escolherFilme():
 
 escolherFilme()
 
+def escolherIngresso():
+    cursor.execute("SELECT mat, tipo, valor FROM ingresso")
+    ingresso = cursor.fetchone()
+    for ingresso in ingresso:
+        mat, tipo, valor = ingresso
+        print(f"Ingresso: {tipo}")
+        print(f"Codigo: {mat}")
+        print("-----")  # Separador para cada filme
 
+        escolhaIngresso = input("Digite a matricula do ingresso que quer comprar: ")
+    
+        if escolhaIngresso == 0:
+            print(f"Preço da matrícula {mat}: {valor}")
+        elif escolhaIngresso == 1:
+            print(f"Preço da matrícula {mat}: {valor}")
 
+    pilhaEscolha.append((escolhaIngresso))
 
 
 
