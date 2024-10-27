@@ -63,7 +63,7 @@ def escolherSessao():
     #pilhaEscolha.append(sessaoEscolhida)
     pilhaEscolha.append({'tipo': 'sessao', 'codigo': sessaoEscolhida, 'detalhes': sessao})
 
-# Função para escolher a poltrona
+
 def escolherPoltrona():
     print("POLTRONAS DISPONÍVEIS:")
     cursor.execute("SELECT num, lado FROM poltrona")
@@ -71,49 +71,72 @@ def escolherPoltrona():
     for poltrona in poltronas:
         num, lado = poltrona
         print(f"Número: {num}, Lado: {lado}")
-    poltronaEscolhida = input("Digite o número da poltrona: ")
-    cursor.execute("SELECT num, lado FROM poltrona WHERE num = %s", (poltronaEscolhida,))
-    poltrona = cursor.fetchone()
-    #pilhaEscolha.append(poltronaEscolhida)
-    pilhaEscolha.append({'tipo': 'poltrona', 'numero': poltronaEscolhida, 'lado': poltrona[1]})
+    poltronasEscolhidas = []
+    while True:
+        poltronaEscolhida = input("Digite o número da poltrona (ou 'proximo' para continuar): ")
+        if poltronaEscolhida.lower() == 'proximo':
+            break
+        cursor.execute("SELECT num, lado FROM poltrona WHERE num = %s", (poltronaEscolhida,))
+        poltrona = cursor.fetchone()
+
+        if any(p['numero'] == poltronaEscolhida for p in poltronasEscolhidas):    # Verifica se a poltrona já foi selecionada
+            print("Poltrona já selecionada, escolha outra!")
+        elif poltrona:
+            poltronasEscolhidas.append({'tipo': 'poltrona', 'numero': poltronaEscolhida, 'lado': poltrona[1]})
+            print(f"Poltrona {poltronaEscolhida} adicionada.")
+        else:
+            print("Poltrona inválida ou não disponível. Tente novamente.")     
+
+    pilhaEscolha.extend(poltronasEscolhidas)  # Adiciona todas as escolhas à pilha de uma vez
+    print("Poltronas selecionadas:", [p['numero'] for p in poltronasEscolhidas])
+
+    # Verifica se mais de um ingresso é necessário
+    if len(poltronasEscolhidas) > 1:
+        print(f"Você escolheu {len(poltronasEscolhidas)} poltronas, selecione um ingresso para cada poltrona.")
+    for _ in range(len(poltronasEscolhidas)):
+        escolherIngresso()
+  
 
 # Função para escolher o ingresso
 def escolherIngresso():
-    cursor.execute("SELECT mat, tipo, valor FROM ingresso")
-    ingressos = cursor.fetchall()
-    for ingresso in ingressos:
-        mat, tipo, valor = ingresso
-        print(f"Ingresso: {tipo}, Código: {mat}")
-    escolhaIngresso = input("Digite o código do ingresso: ")
+    valorTotal = 0  # Inicializa o valor total dos ingressos
+    while True:
+        cursor.execute("SELECT mat, tipo, valor FROM ingresso")
+        ingressos = cursor.fetchall()
+        for ingresso in ingressos:
+            mat, tipo, valor = ingresso
+            print(f"Ingresso: {tipo}, Código: {mat}")
 
-    # Executa a consulta para obter o ingresso escolhido e seu valor
-    cursor.execute("SELECT tipo, valor FROM ingresso WHERE mat = %s", (escolhaIngresso,))
-    ingressoEscolhido = cursor.fetchone()  # Pega o ingresso escolhido
+        escolhaIngresso = input("Digite o código do ingresso: ")
 
-    if ingressoEscolhido:
-        tipo, valor = ingressoEscolhido  # Desempacota o tipo e o valor
-        print(f"Preço do ingresso: {valor}")  # Exibe o preço do ingresso
+        
+        # Executa a consulta para obter o ingresso escolhido e seu valor
+        cursor.execute("SELECT tipo, valor FROM ingresso WHERE mat = %s", (escolhaIngresso,))
+        ingressoEscolhido = cursor.fetchone()  # Pega o ingresso escolhido
 
+        if ingressoEscolhido:
+            tipo, valor = ingressoEscolhido  # Desempacota o tipo e o valor
+            print(f"Preço do ingresso: {valor}")  # Exibe o preço do ingresso
+            valorTotal += valor  # Soma o valor do ingresso ao total 
+        else:
+            print("Ingresso não encontrado. Tente novamente.")
+            escolherIngresso()  # Chama a função novamente se o ingresso não for encontrado
+        
+        # Exibe o valor total dos ingressos ao final
+        print(f"Valor total dos ingressos selecionados: {valorTotal}")
         confirmaPreco = input("Continuar? (s/n) ")
         if confirmaPreco == "s":
-            #pilhaEscolha.append(escolhaIngresso)
             pilhaEscolha.append({'tipo': 'ingresso', 'codigo': escolhaIngresso, 'detalhes': {'tipo': tipo, 'valor': valor}})
-            comprar()
+            #comprar()
         elif confirmaPreco == "n":
             print("Você optou por não continuar, escolha novamente")
             escolherIngresso() 
-    else:
-        print("Ingresso não encontrado. Tente novamente.")
-        escolherIngresso()  # Chama a função novamente se o ingresso não for encontrado
+        # Adiciona o valor total à pilhaEscolha
+        pilhaEscolha.append({'tipo': 'total', 'valor_total': valorTotal})   
     
 
 
-# Função de compra que exibe a pilha
-#def comprar():
-  # print("\nResumo da compra:")
-    #print("Você escolheu:")
-   # for escolha in pilhaEscolha:
-        #print(f"- {escolha}")  # Exibe cada escolha da pilha
+
 
 # Função de compra que exibe a pilha
 def comprar():
@@ -159,7 +182,8 @@ def login(nome, senha):
         
         escolherSessao()
         escolherPoltrona()
-        escolherIngresso()
+        comprar()
+       # escolherIngresso()
     else:
         print("Usuário ou senha incorretos.")
         menu()
