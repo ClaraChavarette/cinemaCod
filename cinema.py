@@ -26,7 +26,6 @@ def printTitulo(texto):
 def printInput(texto):
     largura = len(texto) + 3
     print("-" * largura)  # Usando "_" para o topo
-    #print(f" {texto.upper()} ")  # Exibe o texto em maiúsculas
     print(f" {texto} ")  # Exibe o texto em maiúsculas
     print("-" * largura)  # Usando "-" para a base
     
@@ -82,7 +81,7 @@ def escolherSessao():
     sessaoEscolhida = input("Sessão escolhida: ").lower()
     cursor.execute("SELECT cod, dia, hora, sala FROM sessao WHERE cod = %s", (sessaoEscolhida,))
     sessao = cursor.fetchone()
-    #pilhaEscolha.append(sessaoEscolhida)
+ 
     pilhaEscolha.append({'tipo': 'sessao', 'codigo': sessaoEscolhida, 'detalhes': sessao})
 
   
@@ -100,8 +99,7 @@ def escolherPoltrona():
 
     printInput("Digite o número da poltrona")
     while True:
-        #poltronaEscolhida = input("Digite o número da poltrona (ou 'proximo' para continuar): ")
-        #printInput("Digite o número da poltrona")
+        
         poltronaEscolhida = input("Poltrona escolhida ou 'c' para continuar: ").lower()
         if poltronaEscolhida.lower() == 'c':
             break
@@ -126,10 +124,6 @@ def escolherPoltrona():
         print("   ")
         printInput(f"Selecione um tipo de ingresso para cada poltrona:")
         escolherIngresso(numPoltronas)  # Chama a função apenas uma vez com o total de poltronas
-
-        #for _ in range(numPoltronas):  # Use um underscore para indicar que não vai usar o valor do loop
-            #escolherIngresso(1)  # Chama a função para selecionar ingressos
-
 
 
 # Função para escolher o ingresso
@@ -278,12 +272,6 @@ def menu():
 
 # Iniciar o programa chamando o menu
 menu()
-
-
-
-
-
-
 
 # Fecha o cursor e a conexão
 cursor.close()
