@@ -17,17 +17,17 @@ pilhaEscolha = []
 
 def printTitulo(texto):
     largura = len(texto) + 4
-    print("-" * largura)  # Usando "_" para o topo
-    print(f"| {texto.upper()} |")  # Exibe o texto em maiúsculas
-    print("-" * largura)  # Usando "-" para a base
+    print("-" * largura)  #  topo
+    print(f"| {texto.upper()} |")  #texto em maiúsculas
+    print("-" * largura)  # base
     
 
 
 def printInput(texto):
     largura = len(texto) + 3
-    print("-" * largura)  # Usando "_" para o topo
-    print(f" {texto} ")  # Exibe o texto em maiúsculas
-    print("-" * largura)  # Usando "-" para a base
+    print("-" * largura)  #  topo
+    print(f" {texto} ")  # maiúsculas
+    print("-" * largura)  #  base
     
 
 
@@ -42,14 +42,14 @@ def mostraFilmes():
         nome, faixaEtaria, matricula = filme
         printFormatado = f"{matricula}- Filme: {nome} | Faixa etária: {faixaEtaria} "
         print(printFormatado)
-        print("     ")  # Usando o comprimento da string para a linha de separação
+        print("     ")  
 
 mostraFilmes()
 
 # Função para escolher o filme
 def escolherFilme():
     print("       ")
-    filmeEscolhido = int(input("DIGITE O NÚMERO DO FILME QUE QUER COMPRAR: "))  # Solicita a entrada do usuário
+    filmeEscolhido = int(input("DIGITE O NÚMERO DO FILME QUE QUER COMPRAR: ")) 
     cursor.execute("SELECT nome, matricula FROM filmes WHERE matricula = %s", (filmeEscolhido,))
     filme = cursor.fetchone()
     if filme:
@@ -85,7 +85,7 @@ def escolherSessao():
     pilhaEscolha.append({'tipo': 'sessao', 'codigo': sessaoEscolhida, 'detalhes': sessao})
 
   
-valorTotal = 0  # Inicializa o valor total dos ingressos
+valorTotal = 0 
 
 def escolherPoltrona():
     print("   ")
@@ -110,7 +110,7 @@ def escolherPoltrona():
             print("Poltrona já selecionada, escolha outra!")
         elif poltrona:
             poltronasEscolhidas.append({'tipo': 'poltrona', 'numero': poltronaEscolhida, 'lado': poltrona[1]})
-            #print(f"Poltrona {poltronaEscolhida} adicionada.")
+           
         else:
             print("Poltrona inválida ou não disponível. Tente novamente.")     
 
@@ -123,23 +123,22 @@ def escolherPoltrona():
     if numPoltronas > 0:
         print("   ")
         printInput(f"Selecione um tipo de ingresso para cada poltrona:")
-        escolherIngresso(numPoltronas)  # Chama a função apenas uma vez com o total de poltronas
-
+        escolherIngresso(numPoltronas)  
 
 # Função para escolher o ingresso
 def escolherIngresso(numPoltronas):
     global valorTotal
-    valorTotal = 0  # Reinicia o valor total para cada compra de ingressos
+    valorTotal = 0  
     ingressosSelecionados = []
 
-    # Exibe as opções de ingressos disponíveis
+    
     cursor.execute("SELECT mat, tipo, valor FROM ingresso")
     ingressos = cursor.fetchall()
     for ingresso in ingressos:
         mat, tipo, valor = ingresso
         print(f"{mat}- Tipo: {tipo}   |   Valor: {valor}")
         
-     # Exibe a instrução de inserir o código do ingresso apenas uma vez
+    
     print("   ")
     printInput("Digite o número do ingresso para cada poltrona:")
 
@@ -153,7 +152,7 @@ def escolherIngresso(numPoltronas):
             if ingressoEscolhido:
                 tipo, valor = ingressoEscolhido  # Desempacota o tipo e o valor
                 print(f"Ingresso escolhido: {tipo}   |   Preço: {valor}")
-                valorTotal += valor  # Soma o valor ao total
+                valorTotal += valor  
                 ingressosSelecionados.append({'tipo': 'ingresso', 'codigo': escolhaIngresso, 'detalhes': {'tipo': tipo, 'valor': valor}})
                 break
             else:
@@ -232,13 +231,11 @@ def login(nome, senha):
     if usuario:
         print("   ")
         printTitulo("Login bem-sucedido!")
-       # pilhaEscolha.append(("nome: ", nome))
         pilhaEscolha.append({'tipo': 'usuario', 'nome': nome})
         
         escolherSessao()
         escolherPoltrona()
         comprar()
-       # escolherIngresso()
     else:
         print("Usuário ou senha incorretos.")
         menu()

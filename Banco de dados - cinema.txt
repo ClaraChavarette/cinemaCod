@@ -1,0 +1,53 @@
+pip install mysql-connector-python       
+(instalar no terminal)
+
+
+
+
+create database cinema_bd;
+use cinema_bd;
+
+CREATE TABLE usuarios (
+    id int (2) PRIMARY KEY AUTO_INCREMENT,
+    nome varchar (50) not null,
+    senha varchar(4) not null
+);
+
+CREATE TABLE filmes(
+    matricula int(4) PRIMARY KEY,
+    nome varchar(30) not null,
+    faixaEtaria varchar(10) not null
+);
+
+CREATE TABLE poltrona(
+    num int(2) PRIMARY KEY,
+    lado varchar(10)
+);
+
+CREATE TABLE sessao(
+    cod int(2) PRIMARY KEY AUTO_INCREMENT,
+    dia date not null,
+    hora time not null,
+    sala int(2) not null
+);
+
+CREATE TABLE ingresso(
+    mat int(2) PRIMARY KEY AUTO_INCREMENT,
+    tipo varchar(10) not null,
+    valor DECIMAL(4, 2) not null
+);
+
+CREATE TABLE compra(
+    numero int(3) PRIMARY KEY AUTO_INCREMENT,
+    matriculaFilmePK int(4) not null,
+    FOREIGN KEY (matriculaFilmePK) REFERENCES filmes(matricula),
+    numPoltronaPK int(2) not null,
+    FOREIGN KEY (numPoltronaPK) REFERENCES poltrona(num),
+    codSessaoPK int(2)  not null,
+    FOREIGN KEY (codSessaoPK) REFERENCES sessao(cod),
+    idUsuariosPK int (2) not null,
+    FOREIGN KEY (idUsuariosPK) REFERENCES usuarios(id),
+    matIngressoPK int(2) not null,
+    FOREIGN KEY (matIngressoPK) REFERENCES ingresso(mat)
+);
+
